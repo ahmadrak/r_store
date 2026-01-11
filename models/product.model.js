@@ -2,14 +2,27 @@ const pool = require("../db");
 
 const getAllProducts = async () => {
   const query = `
-    SELECT p.*, c.name AS category
+    SELECT 
+      p.id,
+      p.name,
+      p.description,
+      p.price,
+      p.stock,
+      p.created_at,
+      c.name AS category,
+      pi.id AS image_id,
+      pi.image_url,
+      pi.is_main
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
-    ORDER BY p.created_at DESC
+    LEFT JOIN product_images pi ON p.id = pi.product_id
+    ORDER BY p.created_at DESC;
   `;
+
   const result = await pool.query(query);
   return result.rows;
 };
+
 
 const createProduct = async ({
   name,

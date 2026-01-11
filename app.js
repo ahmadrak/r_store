@@ -3,6 +3,9 @@ const express = require('express')
 const app = express()
 const pool = require("./db");
 const productRoutes = require("./routes/product.routes");
+const categoryRoutes = require("./routes/category.routes");
+const ordersRoutes = require("./routes/order.routes");
+const cartRoutes = require("./routes/cart.routes");
 
 app.get("/db-test", async (req, res) => {
   try {
@@ -16,5 +19,9 @@ app.use(express.json());
 
 
 app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/cart", cartRoutes);
+
 
 app.listen(5000)
