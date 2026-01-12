@@ -83,12 +83,13 @@ const removeCartItem = async (id) => {
   return result.rows[0];
 };
 
-/**
- * Clear cart (used after checkout)
- */
-const clearCart = async () => {
-  await pool.query(`DELETE FROM cart_items`);
+const clearCart = async (userId) => {
+  await pool.query(
+    `DELETE FROM cart_items WHERE user_id = $1`,
+    [userId]
+  );
 };
+
 
 module.exports = {
   getCartItems,
