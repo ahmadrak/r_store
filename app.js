@@ -6,6 +6,24 @@ const productRoutes = require("./routes/product.routes");
 const categoryRoutes = require("./routes/category.routes");
 const ordersRoutes = require("./routes/order.routes");
 const cartRoutes = require("./routes/cart.routes");
+const authRoutes = require("./routes/auth.routes");
+const session = require("express-session");
+const passport = require("passport");
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// 👇 THIS LINE FIXES EVERYTHING
+require("./config/passport")(passport);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.get("/db-test", async (req, res) => {
   try {
@@ -22,6 +40,6 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/cart", cartRoutes);
-
+app.use("/api/auth", authRoutes);
 
 app.listen(5000)

@@ -112,84 +112,17 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-const checkoutFromCart = async () => {
-  const client = await pool.connect();
 
+const checkout = async (req, res) => {
   try {
-    await client.query("BEGIN");
+    const order = await Order.checkoutFromCart();
 
-    // 1️⃣ Get cart items
-    const cartResult = await client.query(`
-      SELECT 
-        ci.product_id,
-        ci.quantity,
-        p.price,
-        p.stock
-      FROM cart_items ci
-      JOIN products p ON ci.product_id = p.id
-    `);
-
-    const cartItems = cartResult.rows;
-
-    if (cartItems.length === 0) {
-      throw new Error("Cart is empty");
-    }
-
-    // 2️⃣ Validate stock + calculate total
-    let totalPrice = 0;
-
-    for (const item of cartItems) {
-      if (item.quantity > item.stock) {
-        throw new Error(`Not enough stock for product ${item.product_id}`);
-      }
-      totalPrice += item.quantity * item.price;
-    }
-
-    // 3️⃣ Create order
-    const orderResult = await client.query(
-      `
-      INSERT INTO orders (total_price, status)
-      VALUES ($1, 'pending')
-      RETURNING *
-      `,
-      [totalPrice]
-    );
-
-    const order = orderResult.rows[0];
-
-    // 4️⃣ Create order items
-    for (const item of cartItems) {
-      await client.query(
-        `
-        INSERT INTO order_items
-          (order_id, product_id, quantity, price_at_time)
-        VALUES ($1, $2, $3, $4)
-        `,
-        [order.id, item.product_id, item.quantity, item.price]
-      );
-
-      // 5️⃣ Reduce stock
-      await client.query(
-        `
-        UPDATE products
-        SET stock = stock - $1
-        WHERE id = $2
-        `,
-        [item.quantity, item.product_id]
-      );
-    }
-
-    // 6️⃣ Clear cart
-    await client.query(`DELETE FROM cart_items`);
-
-    await client.query("COMMIT");
-
-    return order;
+    res.status(201).json({
+      message: "Order created successfully",
+      order,
+    });
   } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
+    res.status(400).json({ error: err.message });
   }
 };
 module.exports = {
@@ -198,5 +131,5 @@ module.exports = {
   getOrderById,
   updateOrderStatus,
   deleteOrder,
-  checkoutFromCart
+  checkout
 };
