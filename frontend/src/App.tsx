@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { ErrorBoundary } from "./components/common/ErrorBoundary";
+import AppRoutes from "./routes/AppRoutes";
+import "./App.css";
 
+/**
+ * Create QueryClient instance for TanStack Query
+ * Configures default options for all queries and mutations
+ */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Refetch on window focus for fresh data
+      refetchOnWindowFocus: false,
+      // Retry failed requests once
+      retry: 1,
+      // Cache data for 5 minutes
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
+
+/**
+ * Main App component that sets up the application context providers
+ * and routes
+ * @returns JSX.Element
+ */
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <NotificationProvider>
+          <AuthProvider>
+            <CartProvider>
+              <AppRoutes />
+            </CartProvider>
+          </AuthProvider>
+        </NotificationProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
 }
 
-export default App
+export default App;
