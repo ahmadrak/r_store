@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../models/user.model");
+const { ensureAuthenticated } = require("../middleware/auth");
 
 // Signup
 router.post("/signup", async (req, res) => {
@@ -23,6 +24,11 @@ router.post("/logout", (req, res) => {
   req.logout(() => {
     res.json({ message: "Logged out" });
   });
+});
+
+// Get current user
+router.get("/me", ensureAuthenticated, (req, res) => {
+  res.json({ user: req.user });
 });
 
 module.exports = router;
