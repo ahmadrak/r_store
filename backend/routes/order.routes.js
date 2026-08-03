@@ -10,8 +10,7 @@ const {
 } = require("../controllers/order.controller");
 const { checkout } = require("../controllers/order.controller");
 
-const ensureAdmin = require('../middleware/auth') 
-const ensureAuthenticated = require('../middleware/auth') 
+const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
 
 router.post("/",ensureAuthenticated, createOrder);
 router.get("/",ensureAuthenticated,ensureAdmin, getAllOrders);

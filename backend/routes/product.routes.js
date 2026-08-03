@@ -11,8 +11,7 @@ const {
   getProductImages,
 } = require("../controllers/productImage.controller");
 
-const ensureAdmin = require('../middleware/auth') 
-const ensureAuthenticated = require('../middleware/auth') 
+const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
 
 router.get("/",ensureAuthenticated, getProducts);
 router.post("/",ensureAuthenticated,ensureAdmin, addProduct);

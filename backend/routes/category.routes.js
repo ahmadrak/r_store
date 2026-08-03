@@ -6,8 +6,7 @@ createCategory,
 updateCategory,
 deleteCategory
 } = require("../controllers/category.controller");
-const ensureAdmin = require('../middleware/auth') 
-const ensureAuthenticated = require('../middleware/auth') 
+const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
 
 
 
