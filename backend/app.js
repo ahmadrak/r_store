@@ -10,7 +10,7 @@ const authRoutes = require("./routes/auth.routes");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require('cors');
-
+const checkoutRoutes = require("./routes/checkout.routes");
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -48,5 +48,8 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/user", authRoutes);
+app.use("/api/checkout", checkoutRoutes);
+
 
 app.listen(5000)
