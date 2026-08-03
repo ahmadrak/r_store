@@ -11,12 +11,15 @@ const {
   getProductImages,
 } = require("../controllers/productImage.controller");
 
-router.get("/", getProducts);
-router.post("/", addProduct);
-router.patch("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
-router.post("/:id/images", addProductImage);
-router.get("/:id/images", getProductImages);
+const ensureAdmin = require('../middleware/auth') 
+const ensureAuthenticated = require('../middleware/auth') 
+
+router.get("/",ensureAuthenticated, getProducts);
+router.post("/",ensureAuthenticated,ensureAdmin, addProduct);
+router.patch("/:id",ensureAuthenticated,ensureAdmin, updateProduct);
+router.delete("/:id",ensureAuthenticated,ensureAdmin, deleteProduct);
+router.post("/:id/images",ensureAuthenticated,ensureAdmin, addProductImage);
+router.get("/:id/images",ensureAuthenticated,ensureAdmin, getProductImages);
 
 
 module.exports = router;

@@ -6,10 +6,14 @@ createCategory,
 updateCategory,
 deleteCategory
 } = require("../controllers/category.controller");
+const ensureAdmin = require('../middleware/auth') 
+const ensureAuthenticated = require('../middleware/auth') 
+
+
 
 router.get("/", getAllCategories);
-router.post("/", createCategory);
-router.patch("/:id", updateCategory);
-router.delete("/:id", deleteCategory);
+router.post("/",ensureAuthenticated,ensureAdmin, createCategory);
+router.patch("/:id",ensureAuthenticated,ensureAdmin, updateCategory);
+router.delete("/:id",ensureAuthenticated,ensureAdmin, deleteCategory);
 
 module.exports = router;

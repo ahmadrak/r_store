@@ -11,7 +11,9 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Order items are required" });
     }
 
-    const order = await Order.createOrder(items);
+    
+
+    const order = await Order.createOrder(items,req.user.id);
     res.status(201).json(order);
 
   } catch (err) {

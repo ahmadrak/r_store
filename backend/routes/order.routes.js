@@ -10,13 +10,15 @@ const {
 } = require("../controllers/order.controller");
 const { checkout } = require("../controllers/order.controller");
 
+const ensureAdmin = require('../middleware/auth') 
+const ensureAuthenticated = require('../middleware/auth') 
 
-router.post("/", createOrder);
-router.get("/", getAllOrders);
-router.get("/:id", getOrderById);
-router.patch("/:id", updateOrderStatus);
-router.delete("/:id", deleteOrder);
-router.post("/checkout", checkout);
+router.post("/",ensureAuthenticated, createOrder);
+router.get("/",ensureAuthenticated,ensureAdmin, getAllOrders);
+router.get("/:id",ensureAuthenticated, getOrderById);
+router.patch("/:id",ensureAuthenticated, updateOrderStatus);
+router.delete("/:id",ensureAuthenticated, deleteOrder);
+router.post("/checkout",ensureAuthenticated, checkout);
 
 
 module.exports = router;

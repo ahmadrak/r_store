@@ -3,7 +3,7 @@ const pool = require("../db");
 /**
  * Create order + order items (transaction)
  */
-const createOrder = async (items) => {
+const createOrder = async (items,userId) => {
   const client = await pool.connect();
 
   try {
@@ -26,13 +26,14 @@ const createOrder = async (items) => {
 
     // insert order items
     const itemQuery = `
-      INSERT INTO order_items (order_id, product_id, quantity, price_at_time)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO order_items (order_id, user_id, product_id, quantity, price_at_time)
+      VALUES ($1, $2, $3, $4,$5)
     `;
 
     for (const item of items) {
       await client.query(itemQuery, [
         order.id,
+        userId,
         item.product_id,
         item.quantity,
         item.price
