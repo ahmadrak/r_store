@@ -5,7 +5,7 @@ const createCheckoutSession = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const cartItems = await Cart.getCartItemsByUser(userId);
+    const cartItems = await Cart.getCartItems(userId);
 
     if (cartItems.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -16,7 +16,7 @@ const createCheckoutSession = async (req, res) => {
         currency: "usd",
         product_data: {
           name: item.name,
-          images: [item.image_url],
+          ...(item.image_url ? { images: [item.image_url] } : {}),
         },
         unit_amount: Math.round(item.price * 100),
       },
