@@ -91,9 +91,18 @@ const deleteProduct  = async (id)=>{
   const result = await pool.query(query, [id]);
   return result.rows[0];
 }
+
+const getProductsByIds = async (ids) => {
+  if (!ids.length) return [];
+  const query = `SELECT id, price, stock FROM products WHERE id = ANY($1::int[])`;
+  const result = await pool.query(query, [ids]);
+  return result.rows;
+};
+
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
+  getProductsByIds,
 };
