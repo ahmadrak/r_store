@@ -91,7 +91,7 @@ describe("Home Page", () => {
       renderHome();
 
       expect(
-        screen.getByRole("heading", { name: /welcome to our store/i }),
+        screen.getByRole("heading", { name: /find something you’ll love/i }),
       ).toBeInTheDocument();
       expect(
         screen.getByText(/discover our amazing collection of products/i),
