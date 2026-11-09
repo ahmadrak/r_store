@@ -26,20 +26,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    loadUser();
+    let active = true;
+    const loadUser = async () => {
+      try {
+        const userData = await authApi.getCurrentUser();
+        if (active) setUser(userData);
+      } catch {
+        if (active) setUser(null);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+    void loadUser();
+    return () => { active = false; };
   }, []);
-
-  const loadUser = async (): Promise<void> => {
-    try {
-      const userData = await authApi.getCurrentUser();
-      setUser(userData);
-    } catch (error) {
-      // User is not authenticated or session expired
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
