@@ -11,6 +11,9 @@ const createCheckoutSession = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
+    if (cartItems.some(item => !Number.isSafeInteger(item.quantity) || item.quantity <= 0 || item.quantity > item.stock || !Number.isFinite(Number(item.price)) || Number(item.price) <= 0)) {
+      return res.status(409).json({ message: "Cart contains unavailable items" });
+    }
     const lineItems = cartItems.map(item => ({
       price_data: {
         currency: "usd",
@@ -18,7 +21,7 @@ const createCheckoutSession = async (req, res) => {
           name: item.name,
           ...(item.image_url ? { images: [item.image_url] } : {}),
         },
-        unit_amount: Math.round(item.price * 100),
+        unit_amount: Math.round(Number(item.price) * 100),
       },
       quantity: item.quantity,
     }));
@@ -37,7 +40,8 @@ const createCheckoutSession = async (req, res) => {
     res.json({ url: session.url });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Checkout session failed", err);
+    res.status(500).json({ message: "Unable to start checkout" });
   }
 };
 
