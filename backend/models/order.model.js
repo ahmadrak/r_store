@@ -1,5 +1,5 @@
 const pool = require("../db");
-const Product = require("./product.model");
+
 
 /**
  * Create order + order items (transaction)
@@ -13,7 +13,8 @@ const createOrder = async (items, userId) => {
     await client.query("BEGIN");
 
     const productIds = items.map((item) => item.product_id);
-    const dbProducts = await Product.getProductsByIds(productIds);
+    const dbProductsResult = await client.query("SELECT id, price, stock FROM products WHERE id = ANY($1::int[]) FOR UPDATE", [productIds]);
+    const dbProducts = dbProductsResult.rows;
     const productMap = new Map(dbProducts.map((p) => [p.id, p]));
 
     // validate every requested product exists and has enough stock,
@@ -105,7 +106,7 @@ const getOrderById = async (id) => {
       oi.user_id,
       oi.product_id,
       oi.quantity,
-      oi.price
+      oi.price_at_time AS price
     FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.order_id
     WHERE o.id = $1
@@ -159,6 +160,7 @@ const checkoutFromCart = async (userId) => {
       FROM cart_items ci
       JOIN products p ON ci.product_id = p.id
       WHERE ci.user_id = $1
+      FOR UPDATE OF ci, p
       `,
       [userId]
     );
@@ -173,10 +175,10 @@ const checkoutFromCart = async (userId) => {
     let totalPrice = 0;
 
     for (const item of cartItems) {
-      if (item.quantity > item.stock) {
+      if (!Number.isSafeInteger(item.quantity) || item.quantity <= 0 || item.quantity > item.stock) {
         throw new Error(`Not enough stock for product ${item.product_id}`);
       }
-      totalPrice += item.quantity * item.price;
+      totalPrice += item.quantity * Number(item.price);
     }
 
     // 3️⃣ Create order
