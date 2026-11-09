@@ -17,9 +17,10 @@ router.post("/signup", async (req, res) => {
   }
 });
 router.post("/login", passport.authenticate("local"), (req, res) => {
+  const authenticatedUser = req.user;
   req.session.regenerate((err) => {
     if (err) return res.status(500).json({ message: "Login failed" });
-    req.login(req.user, (loginError) => {
+    req.login(authenticatedUser, (loginError) => {
       if (loginError) return res.status(500).json({ message: "Login failed" });
       res.json({ message: "Logged in successfully", user: safeUser(req.user) });
     });
