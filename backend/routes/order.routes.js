@@ -1,23 +1,11 @@
-
-const express = require("express");
-const router = express.Router();
-const {
-  getAllOrders,
-  getOrderById,
-  createOrder,
-  deleteOrder,
-  updateOrderStatus,
-} = require("../controllers/order.controller");
-const { checkout } = require("../controllers/order.controller");
-
-const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
-
-router.post("/",ensureAuthenticated, createOrder);
-router.get("/",ensureAuthenticated,ensureAdmin, getAllOrders);
-router.get("/:id",ensureAuthenticated, getOrderById);
-router.patch("/:id",ensureAuthenticated, updateOrderStatus);
-router.delete("/:id",ensureAuthenticated, deleteOrder);
-router.post("/checkout",ensureAuthenticated, checkout);
-
-
+const router = require("express").Router();
+const { getAllOrders, getOrderById, createOrder, deleteOrder, updateOrderStatus, checkout } = require("../controllers/order.controller");
+const { ensureAuthenticated, ensureAdmin } = require("../middleware/auth");
+router.use(ensureAuthenticated);
+router.post("/", createOrder);
+router.get("/", ensureAdmin, getAllOrders);
+router.post("/checkout", checkout);
+router.get("/:id", getOrderById);
+router.patch("/:id", ensureAdmin, updateOrderStatus);
+router.delete("/:id", ensureAdmin, deleteOrder);
 module.exports = router;
