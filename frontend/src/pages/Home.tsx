@@ -22,15 +22,19 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 animate-fadeIn">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Welcome to Our Store
-        </h1>
-        <p className="text-lg text-gray-600">
-          Discover our amazing collection of products
-        </p>
+    <main className="min-h-screen bg-slate-50">\n      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <section className="relative mb-10 overflow-hidden rounded-3xl bg-slate-900 px-6 py-14 text-white shadow-xl sm:px-12 sm:py-20" aria-labelledby="store-heading">
+        <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" aria-hidden="true" />
+        <div className="relative max-w-2xl">
+          <span className="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-widest uppercase">R-Store Collection</span>
+          <h1 id="store-heading" className="mb-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">Find something you’ll love.</h1>
+          <p className="max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">Explore our curated selection of products. Discover your next favorite, all in one place.</p>
+          <a href="#shop-products" className="mt-8 inline-flex items-center rounded-xl bg-white px-6 py-3 font-semibold text-slate-900 transition hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Shop collection <span aria-hidden="true" className="ml-2">→</span></a>
+        </div>
+      </section>
+      <div id="shop-products" className="mb-6 scroll-mt-6">
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Explore products</h2>
+        <p className="mt-2 text-sm text-slate-600">Browse by category and find what fits your style.</p>
       </div>
 
       {/* Category Filter Section */}
@@ -87,8 +91,6 @@ const Home: React.FC = () => {
       ) : (
         <ProductGrid products={products} isLoading={productsLoading} />
       )}
-    </div>
-  );
-};
+      </div>\n    </main>\n  );\n};
 
 export default Home;
