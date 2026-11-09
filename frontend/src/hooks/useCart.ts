@@ -25,6 +25,8 @@
  *       <button onClick={() => addItem(123, 1)}>Add Product</button>
  *     </div>
  *   );
- 
+ * ```
+ */
+
 export { useCart } from "../contexts/CartContext";
 export type { CartContextType } from "../contexts/CartContext";
