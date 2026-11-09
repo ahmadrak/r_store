@@ -5,9 +5,9 @@ const Order = require("../models/order.model");
  */
 const createOrder = async (req, res) => {
   try {
-    const { items } = req.body;
+    const { items } = req.body || {};
 
-    if (!items || items.length === 0) {
+    if (!Array.isArray(items) || items.length === 0 || items.some(item => !Number.isSafeInteger(item.product_id) || item.product_id <= 0 || !Number.isSafeInteger(item.quantity) || item.quantity <= 0)) {
       return res.status(400).json({ message: "Order items are required" });
     }
 
