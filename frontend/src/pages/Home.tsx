@@ -22,7 +22,8 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50">\n      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-slate-50">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <section className="relative mb-10 overflow-hidden rounded-3xl bg-slate-900 px-6 py-14 text-white shadow-xl sm:px-12 sm:py-20" aria-labelledby="store-heading">
         <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" aria-hidden="true" />
         <div className="relative max-w-2xl">
@@ -91,6 +92,9 @@ const Home: React.FC = () => {
       ) : (
         <ProductGrid products={products} isLoading={productsLoading} />
       )}
-      </div>\n    </main>\n  );\n};
+      </div>
+    </main>
+  );
+};
 
 export default Home;
