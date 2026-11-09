@@ -35,7 +35,7 @@ const removeCartItem = async (req, res) => {
   try {
     const item = await Cart.removeCartItem(req.params.id, req.user.id);
     if (!item) return res.status(404).json({ message: "Cart item not found" });
-    res.json({ message: "Item removed from cart", item });
+    res.json({ message: "Item removed from cart", cartItem: item });
   } catch (_error) {
     res.status(500).json({ message: "Unable to remove cart item" });
   }
