@@ -40,6 +40,9 @@ const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
     const rows = await Order.getOrderById(id);
+    if (req.user.role !== "admin" && rows.some(row => String(row.user_id) !== String(req.user.id))) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
 
     if (rows.length === 0) {
       return res.status(404).json({ message: "Order not found" });
@@ -117,7 +120,7 @@ const deleteOrder = async (req, res) => {
 
 const checkout = async (req, res) => {
   try {
-    const order = await Order.checkoutFromCart();
+    const order = await Order.checkoutFromCart(req.user.id);
 
     res.status(201).json({
       message: "Order created successfully",
